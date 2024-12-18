@@ -12,4 +12,9 @@ import com.example.ucp2pam.data.entity.Suplier
 @Database(entities = [Barang::class,Suplier::class], version = 2, exportSchema = false )
 abstract class AppDatabase : RoomDatabase() {
 
+    abstract fun barangDao() : BarangDao
+
+    abstract fun supliarDao() : SuplierDao
+
+
 }
