@@ -4,7 +4,7 @@ import com.example.ucp2pam.data.entity.Barang
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryBarang {
-    suspend fun insertDsn(barang: Barang)
+    suspend fun insertBarang(barang: Barang)
 
     //Dari sini
     fun getAllBarang(): Flow<List<Barang>>
