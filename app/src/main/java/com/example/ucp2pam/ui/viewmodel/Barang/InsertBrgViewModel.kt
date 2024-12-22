@@ -26,3 +26,9 @@ data class BarangEvent(
     val Stok: String = "",
     val NamaSuplier: String = "",
 )
+
+data class BrgUiStateBrg(
+    val barangEvent: BarangEvent = BarangEvent(),
+    val isEntryValidBrg: FormErrorStateBrg = FormErrorStateBrg(),
+    val snackBarMessageBrg:String?=null,
+)
