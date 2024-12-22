@@ -15,33 +15,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
+
 @Composable
 fun TopAppBar(
-    onBack: () -> Unit,
     showBackButton: Boolean = true,
     judul: String,
-) {
+    ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         contentAlignment = Alignment.Center // Pastikan konten di tengah
     ) {
-        if (showBackButton) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(
-                    onClick = onBack,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Text("Kembali")
-                }
-                Spacer(modifier = Modifier.weight(2f))
-            }
-        }
-
         // Teks judul
         Text(
             text = judul,

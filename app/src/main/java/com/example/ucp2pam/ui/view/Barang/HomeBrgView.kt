@@ -56,7 +56,6 @@ fun HomeBrgView(
             TopAppBar(
                 judul = "Daftar Barang",
                 showBackButton = false,
-                onBack = { },
 
                 )
         },
