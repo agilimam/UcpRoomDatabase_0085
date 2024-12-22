@@ -55,7 +55,7 @@ class InsertBrgViewModel (private val repositoryBarang: RepositoryBarang) : View
             )
         }
     }
-    fun resetSnackBarMessage(){
+    fun resetSnackBarMessageBrg(){
         uiStateBrg = uiStateBrg.copy(snackBarMessageBrg = null)
     }
 
