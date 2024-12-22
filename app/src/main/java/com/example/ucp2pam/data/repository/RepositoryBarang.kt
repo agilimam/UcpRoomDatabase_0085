@@ -9,7 +9,7 @@ interface RepositoryBarang {
     //Dari sini
     fun getAllBarang(): Flow<List<Barang>>
 
-    fun getBarang(id: String) : Flow<Barang>
+    fun getBarang(id: Int) : Flow<Barang>
 
     suspend fun  deleteBarang(barang: Barang)
 
