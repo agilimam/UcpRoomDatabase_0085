@@ -35,31 +35,32 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2pam.data.entity.Barang
 import com.example.ucp2pam.ui.costumwidget.TopAppBar
 import com.example.ucp2pam.ui.viewmodel.Barang.DetailBrgViewModel
-import com.example.ucp2pam.ui.viewmodel.Barang.DetailUiStateBrg
+import com.example.ucp2pam.ui.viewmodel.Barang.DetailUiState
 import com.example.ucp2pam.ui.viewmodel.Barang.toBarangEntity
 import com.example.ucp2pam.ui.viewmodel.PenyediaViewModel
+
 
 @Composable
 fun DetailBrgView(
     modifier: Modifier = Modifier,
+    viewModel: DetailBrgViewModel = viewModel(factory = PenyediaViewModel.Factory),
     onBack: () -> Unit = {},
     onEditClick: (String) -> Unit = {},
     onDeleteClick: () -> Unit = {},
-    viewModel: DetailBrgViewModel = viewModel(factory = PenyediaViewModel.Factory)
-
 ){
     Scaffold (
         topBar = {
             TopAppBar(
-                judul = "Detail Mahasiswa",
+                judul = "Detail Barang",
                 showBackButton = true,
+                onBack = onBack,
 
                 )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEditClick(viewModel.detailUiStateBrg.value.detailUiEventBrg.Nama) },
+                    onEditClick(viewModel.detailUiState.value.detailUiEvent.id) },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -71,11 +72,11 @@ fun DetailBrgView(
         }
 
     ){ innerPadding ->
-        val  detailUiStateBrg by viewModel.detailUiStateBrg.collectAsState()
+        val  detailUiState by viewModel.detailUiState.collectAsState()
 
         BodyDetailBrg(
             modifier = Modifier.padding(innerPadding),
-            detailUiStateBrg = detailUiStateBrg,
+            detailUiState = detailUiState,
             onDeleteClick = {
                 viewModel.deleteBrg()
                 onDeleteClick()
@@ -86,12 +87,12 @@ fun DetailBrgView(
 @Composable
 fun BodyDetailBrg(
     modifier: Modifier = Modifier,
-    detailUiStateBrg: DetailUiStateBrg =DetailUiStateBrg(),
+    detailUiState: DetailUiState = DetailUiState(),
     onDeleteClick: () -> Unit = {}
 ){
-    var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
+    var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false)}
     when{
-        detailUiStateBrg.isLoadingBrg -> {
+        detailUiState.isLoading -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -99,14 +100,14 @@ fun BodyDetailBrg(
                 CircularProgressIndicator() //Tampilkan loading
             }
         }
-        detailUiStateBrg.isUiEvenNotEmptyBrg -> {
+        detailUiState.isUiEvenNotEmpty -> {
             Column (
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ){
                 itemDetailBrg(
-                    barang = detailUiStateBrg.detailUiEventBrg.toBarangEntity(),
+                    barang =  detailUiState.detailUiEvent.toBarangEntity(),
                     modifier = modifier
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -133,7 +134,7 @@ fun BodyDetailBrg(
         }
 
 
-        detailUiStateBrg.isUiEventEmptyBrg -> {
+        detailUiState.isUiEventEmpty -> {
             Box(
                 modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
@@ -163,7 +164,7 @@ fun itemDetailBrg(
         Column (
             modifier = Modifier.padding(16.dp)
         ) {
-            ComponentDetailBrg(judul = "id", isinya = barang.id)
+            ComponentDetailBrg(judul = "ID", isinya = barang.id)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailBrg(judul = "Nama", isinya = barang.Nama)
             Spacer(modifier = Modifier.padding(4.dp))
@@ -173,7 +174,7 @@ fun itemDetailBrg(
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailBrg(judul = "Stok", isinya = barang.Stok)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailBrg(judul = "Namasuplier", isinya = barang.NamaSuplier)
+            ComponentDetailBrg(judul = "NamaSuplier", isinya = barang.NamaSuplier)
             Spacer(modifier = Modifier.padding(4.dp))
         }
 

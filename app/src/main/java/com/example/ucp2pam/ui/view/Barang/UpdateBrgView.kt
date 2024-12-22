@@ -22,7 +22,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
 @Composable
 fun UpdateBrgView(
     onBack : () -> Unit,
@@ -56,8 +55,9 @@ fun UpdateBrgView(
         snackbarHost = { SnackbarHost(hostState = snackbarHostStateBrg) }, //tempatkan snackbar di scaffold
         topBar = {
             TopAppBar(
-                judul = "Edit Mahasiswa",
+                judul = "Edit Barang",
                 showBackButton = true,
+                onBack = onBack
 
                 )
         }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 fun TopAppBar(
     showBackButton: Boolean = true,
     judul: String,
+    onBack : () -> Unit,
     ) {
     Box(
         modifier = Modifier
@@ -27,6 +28,21 @@ fun TopAppBar(
             .padding(16.dp),
         contentAlignment = Alignment.Center // Pastikan konten di tengah
     ) {
+        if (showBackButton) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    Text("Kembali")
+                }
+                Spacer(modifier = Modifier.weight(2f))
+            }
+        }
+
         // Teks judul
         Text(
             text = judul,

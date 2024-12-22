@@ -20,11 +20,11 @@ class UpdateBrgViewModel (
     var updateUiStateBrg by mutableStateOf(BrgUiState())
         private set
 
-    private val _Nama: String = checkNotNull(savedStateHandle[DestinasiUpdateBrg.Nama])
+    private val _id: String = checkNotNull(savedStateHandle[DestinasiUpdateBrg.ID])
 
     init {
         viewModelScope.launch {
-            updateUiStateBrg = repositoryBarang.getBarang(_Nama)
+            updateUiStateBrg = repositoryBarang.getBarang(_id)
                 .filterNotNull()
                 .first()
                 .toUiStateBrg()
@@ -82,5 +82,5 @@ class UpdateBrgViewModel (
 
 }
 fun Barang.toUiStateBrg():BrgUiState = BrgUiState(
-    barangEvent = this.toDetailUiEventBrg(),
+    barangEvent = this.toDetailUiEvent(),
 )

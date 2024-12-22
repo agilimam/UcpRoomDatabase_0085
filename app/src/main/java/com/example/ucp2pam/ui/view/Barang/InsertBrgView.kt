@@ -1,5 +1,6 @@
 package com.example.ucp2pam.ui.view.Barang
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2pam.ui.costumwidget.TopAppBar
+import com.example.ucp2pam.ui.navigation.AlamatNavigasi
 import com.example.ucp2pam.ui.viewmodel.Barang.BarangEvent
 import com.example.ucp2pam.ui.viewmodel.Barang.BrgUiState
 import com.example.ucp2pam.ui.viewmodel.Barang.FormErrorStateBrg
@@ -31,6 +32,9 @@ import com.example.ucp2pam.ui.viewmodel.Barang.InsertBrgViewModel
 import com.example.ucp2pam.ui.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
 
+object DestinasiInsertBrg: AlamatNavigasi {
+    override val route = "Insert-Brg"
+}
 @Composable
 fun FormBrg(
     barangEvent: BarangEvent = BarangEvent(),
@@ -65,7 +69,7 @@ fun FormBrg(
             },
             label = { Text("Nama") },
             isError = errorStateBrg.Nama != null,
-            placeholder = { Text("Masukkan Nama") }
+            placeholder = { Text("Masukkan Nama Barang") }
         )
         Text(
             text = errorStateBrg.Nama?: "",
@@ -143,7 +147,7 @@ fun FormBrg(
 @Composable
 fun InsertBrgView(
     modifier: Modifier = Modifier,
-    OnBack: () -> Unit,
+    onBack: () -> Unit,
     onNavigate: () -> Unit,
     viewModel: InsertBrgViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
@@ -154,12 +158,18 @@ fun InsertBrgView(
     LaunchedEffect(uiStateBrg.snackBarMessageBrg) {
         uiStateBrg.snackBarMessageBrg?.let { message ->
             corutineScope.launch {
-                snackbarHostStateBrg.showSnackbar(message)
-                viewModel.resetSnackBarMessageBrg()
+                try {
+                    snackbarHostStateBrg.showSnackbar(message)
+                } catch (e: Exception) {
+                    Log.e("SnackbarError", "Error showing snackbar: ${e.message}")
+                } finally {
+                    viewModel.resetSnackBarMessageBrg()
+                    Log.d("SnackbarState", "Snackbar message reset")
+                }
             }
         }
-
     }
+
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostStateBrg) }
@@ -172,7 +182,8 @@ fun InsertBrgView(
         ){
             TopAppBar(
                 showBackButton = true,
-                judul = "Tambah Mahasiswa",
+                judul = "Tambah Barang",
+                onBack = onBack,
 
             )
 

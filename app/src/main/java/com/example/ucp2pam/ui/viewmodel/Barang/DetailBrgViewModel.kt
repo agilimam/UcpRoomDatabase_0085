@@ -16,30 +16,32 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+
 class DetailBrgViewModel (
     savedStateHandle: SavedStateHandle,
     private val repositoryBarang: RepositoryBarang
-    ) : ViewModel() {
-    private val _Nama: String = checkNotNull(savedStateHandle[DestinasiDetailBarang.Nama])
 
-    val detailUiStateBrg: StateFlow<DetailUiStateBrg> = repositoryBarang.getBarang(_Nama)
+    ) : ViewModel() {
+    private val _id: String = checkNotNull(savedStateHandle[DestinasiDetailBarang.ID])
+
+    val detailUiState: StateFlow<DetailUiState> = repositoryBarang.getBarang(_id)
         .filterNotNull()
         .map {
-            DetailUiStateBrg(
-                detailUiEventBrg = it.toDetailUiEventBrg(),
-                isLoadingBrg = false,
+            DetailUiState(
+                detailUiEvent = it.toDetailUiEvent(),
+                isLoading = false,
             )
         }
         .onStart {
-            emit(DetailUiStateBrg(isLoadingBrg = true))
+            emit(DetailUiState(isLoading = true))
             delay(600)
         }
         .catch {
             emit(
-                DetailUiStateBrg(
-                    isLoadingBrg = false,
-                    isErrorBrg = true,
-                    errorMessageBrg= it.message ?: "Terjadi Kesalahan",
+                DetailUiState(
+                    isLoading = false,
+                    isError = true,
+                    errorMessage = it.message ?: "Terjadi Kesalahan",
                 )
 
             )
@@ -47,35 +49,40 @@ class DetailBrgViewModel (
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(2000),
-            initialValue = DetailUiStateBrg(
-                isLoadingBrg = true,
+            initialValue = DetailUiState(
+                isLoading = true,
             )
         )
 
     fun deleteBrg(){
-        detailUiStateBrg.value.detailUiEventBrg.toBarangEntity().let {
+        detailUiState.value.detailUiEvent.toBarangEntity().let {
             viewModelScope.launch {
-               repositoryBarang.deleteBarang(it)
+              repositoryBarang.deleteBarang(it)
             }
         }
     }
+
 }
 
-data class DetailUiStateBrg(
-    val detailUiEventBrg:BarangEvent =BarangEvent(),
-    val isLoadingBrg: Boolean = false,
-    val isErrorBrg: Boolean = false,
-    val errorMessageBrg: String = ""
+
+data class DetailUiState(
+    val detailUiEvent: BarangEvent = BarangEvent(),
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String = ""
 
 ) {
-    val isUiEventEmptyBrg: Boolean
-        get() = detailUiEventBrg == BarangEvent()
-    val isUiEvenNotEmptyBrg: Boolean
-        get() = detailUiEventBrg != BarangEvent()
+    val isUiEventEmpty: Boolean
+        get() = detailUiEvent == BarangEvent()
+    val isUiEvenNotEmpty: Boolean
+        get() = detailUiEvent != BarangEvent()
 }
 
+//Data class untuk menampung data yang akan di tampilkan di UI
+
 // Memindahkan data dari entity ke ui
-fun Barang.toDetailUiEventBrg(): BarangEvent{
+
+fun Barang.toDetailUiEvent(): BarangEvent{
     return BarangEvent(
         id = id,
         Nama = Nama,
