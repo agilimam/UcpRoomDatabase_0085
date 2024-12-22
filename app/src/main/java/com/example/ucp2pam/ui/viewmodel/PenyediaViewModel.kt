@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.ucp2pam.Apk
 import com.example.ucp2pam.ui.viewmodel.Barang.HomeBrgViewModel
+import com.example.ucp2pam.ui.viewmodel.Barang.InsertBrgViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
@@ -13,6 +14,11 @@ object PenyediaViewModel {
             HomeBrgViewModel(
                 Apk().containerApp.repositoryBarang
 
+            )
+        }
+        initializer {
+            InsertBrgViewModel(
+                Apk().containerApp.repositoryBarang
             )
         }
     }
