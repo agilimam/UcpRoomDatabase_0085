@@ -22,7 +22,7 @@ class DetailBrgViewModel (
     ) : ViewModel() {
     private val _Nama: String = checkNotNull(savedStateHandle[DestinasiDetailBarang.Nama])
 
-    val detailUiState: StateFlow<DetailUiStateBrg> = repositoryBarang.getBarang(_Nama)
+    val detailUiStateBrg: StateFlow<DetailUiStateBrg> = repositoryBarang.getBarang(_Nama)
         .filterNotNull()
         .map {
             DetailUiStateBrg(
@@ -53,7 +53,7 @@ class DetailBrgViewModel (
         )
 
     fun deleteBrg(){
-        detailUiState.value.detailUiEventBrg.toBarangEntity().let {
+        detailUiStateBrg.value.detailUiEventBrg.toBarangEntity().let {
             viewModelScope.launch {
                repositoryBarang.deleteBarang(it)
             }
