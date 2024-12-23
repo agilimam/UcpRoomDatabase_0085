@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ucp2pam.data.entity.Barang
-import com.example.ucp2pam.data.repository.RepositoryBarang
+import com.example.ucp2pam.repository.RepositoryBarang
 import com.example.ucp2pam.ui.navigation.DestinasiDetailBarang
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,12 +19,14 @@ import kotlinx.coroutines.launch
 
 class DetailBrgViewModel (
     savedStateHandle: SavedStateHandle,
-    private val repositoryBarang: RepositoryBarang
+    private val repositoryBarang: RepositoryBarang,
 
     ) : ViewModel() {
-    private val _id: String = checkNotNull(savedStateHandle[DestinasiDetailBarang.ID])
+    private val id: Int = checkNotNull(savedStateHandle[DestinasiDetailBarang.ID]){
+        "ID harus Tersedia"
+    }
 
-    val detailUiState: StateFlow<DetailUiState> = repositoryBarang.getBarang(_id)
+    val detailUiState: StateFlow<DetailUiState> = repositoryBarang.getBarang(id)
         .filterNotNull()
         .map {
             DetailUiState(
@@ -87,8 +89,8 @@ fun Barang.toDetailUiEvent(): BarangEvent{
         id = id,
         Nama = Nama,
         Deskripsi = Deskripsi,
-        Harga = Harga,
-        Stok = Stok,
+        Harga = Harga.toString(),
+        Stok = Stok.toString(),
         NamaSuplier = NamaSuplier,
     )
 }
