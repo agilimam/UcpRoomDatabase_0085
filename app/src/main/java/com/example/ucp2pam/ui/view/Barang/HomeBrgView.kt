@@ -7,11 +7,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,39 +33,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2pam.data.entity.Barang
 import com.example.ucp2pam.ui.costumwidget.TopAppBar
-import com.example.ucp2pam.ui.viewmodel.Barang.HomeBrgUiState
 import com.example.ucp2pam.ui.viewmodel.Barang.HomeBrgViewModel
+import com.example.ucp2pam.ui.viewmodel.Barang.HomeUiState
 import com.example.ucp2pam.ui.viewmodel.PenyediaViewModel
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun HomeBrgView(
     viewModel: HomeBrgViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    onDetailClik: (String) -> Unit = { },
+    onDetailClick: (String) -> Unit = { },
+    onBack:()->Unit,
     modifier: Modifier = Modifier
-
-){
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 judul = "Daftar Barang",
                 showBackButton = true,
-                onBack = {}
+                onBack = onBack,
+
                 )
         },
     ) { innerPadding ->
-        val homeBrgUiState by viewModel.homeBrgUiState.collectAsState()
+        val homeUiState by viewModel.homeUiState.collectAsState()
 
         BodyHomeBrgView(
-            homeBrgUiState = homeBrgUiState,
+            homeUiState = homeUiState,
             onClick = {
-                onDetailClik(it)
+                onDetailClick(it)
             },
             modifier = Modifier.padding(innerPadding)
         )
@@ -67,14 +78,14 @@ fun HomeBrgView(
 
 @Composable
 fun BodyHomeBrgView(
-    homeBrgUiState: HomeBrgUiState,
+    homeUiState: HomeUiState,
     onClick: (String) -> Unit = { },
     modifier: Modifier = Modifier
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() } // Snackbar state
     when {
-        homeBrgUiState.isLoadingBrg -> {
+        homeUiState.isLoading -> {
             // Menampilkan indikator loading
             Box(
                 modifier = modifier.fillMaxSize(),
@@ -84,10 +95,10 @@ fun BodyHomeBrgView(
             }
         }
 
-        homeBrgUiState.isErrorBrg -> {
+        homeUiState.isError -> {
             //Menampilkan pesarn error
-            LaunchedEffect(homeBrgUiState.errorMessageBrg) {
-                homeBrgUiState.errorMessageBrg?.let { message ->
+            LaunchedEffect(homeUiState.errorMessage) {
+                homeUiState.errorMessage?.let { message ->
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(message) //Tampilkan Snackbar
                     }
@@ -95,14 +106,14 @@ fun BodyHomeBrgView(
             }
         }
 
-        homeBrgUiState.listBrg.isEmpty() -> {
+        homeUiState.listBrg.isEmpty() -> {
             // Menampilkan pesan jika data kosong
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Tidak ada data Barang.",
+                    text = "Tidak ada data Baarang.",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
@@ -113,7 +124,7 @@ fun BodyHomeBrgView(
         else -> {
             //Menampilkan daftar Barang
             ListBarang(
-                listBrg = homeBrgUiState.listBrg,
+                listBrg = homeUiState.listBrg,
                 onClick = {
                     onClick(it)
                     println(
@@ -128,10 +139,10 @@ fun BodyHomeBrgView(
 
 @Composable
 fun ListBarang(
-    listBrg : List<Barang>,
+    listBrg: List<Barang>,
     modifier: Modifier = Modifier,
     onClick: (String) -> Unit = { }
-){
+) {
     LazyColumn (
         modifier = modifier
     ) {
@@ -140,65 +151,104 @@ fun ListBarang(
             itemContent = { brg ->
                 CardBrg(
                     brg = brg,
-                    onClick = { onClick(brg.Nama) }
+                    onClick = { onClick(brg.id.toString())}
                 )
             }
         )
     }
-
 }
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardBrg(
     brg: Barang,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = { }
-){
-    Card (
+) {
+    val cardColors = if (brg.Stok == 0) {
+        Color.Gray
+    } else if (brg.Stok in 1..10) {
+        Color.Red
+    } else {
+        Color.Green
+    }
+
+    Card(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = cardColors(containerColor = cardColors)
     ) {
-        Column (
-            modifier = Modifier.padding(8.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding()
         ) {
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(
-                    text = brg.Nama,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                Icon(
+                    imageVector = Icons.Filled.ShoppingCart,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .padding(end = 16.dp)
                 )
+
+                Column(
+                    modifier = Modifier.padding(8.dp)
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = brg.Nama,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        color = Color.Black
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.DateRange,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                            )
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Text(
+                            text = "${brg.Stok} Brg",
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(imageVector = Icons.Filled.Home,
+                            contentDescription = null,
+                            modifier =Modifier
+                        )
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Text(
+                            text = brg.NamaSuplier,
+                            fontSize = 14.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
             }
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(
-                    text = brg.Deskripsi,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-            }
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "")
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(
-                    text = brg.Harga,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+
+            Text(
+                text = "Rp ${brg.Harga}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color.Black,
+                modifier =Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(top = 30.dp)
+            )
         }
     }
-
 }
