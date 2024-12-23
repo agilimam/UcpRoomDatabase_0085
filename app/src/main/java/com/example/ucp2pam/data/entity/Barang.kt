@@ -10,7 +10,7 @@ data class Barang(
     val id:Int = 0,
     val Nama:String,
     val Deskripsi:String,
-    val Harga:String,
-    val Stok:String,
+    val Harga:Double,
+    val Stok:Int,
     val NamaSuplier :String,
 )
