@@ -3,7 +3,7 @@ package com.example.ucp2pam.ui.viewmodel.Barang
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ucp2pam.data.entity.Barang
-import com.example.ucp2pam.data.repository.RepositoryBarang
+import com.example.ucp2pam.repository.RepositoryBarang
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,41 +13,45 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
-class HomeBrgViewModel(
-    private val repositoryBarang: RepositoryBarang
-) : ViewModel(){
-    val homeBrgUiState : StateFlow<HomeBrgUiState> = repositoryBarang.getAllBarang()
+class HomeBrgViewModel (
+    private val  repositoryBarang: RepositoryBarang
+
+) : ViewModel() {
+    val homeUiState : StateFlow<HomeUiState> = repositoryBarang.getAllBarang()
         .filterNotNull()
         .map {
-            HomeBrgUiState(
+            HomeUiState(
                 listBrg = it.toList(),
-                isLoadingBrg = false,
+                isLoading = false,
             )
         }
         .onStart {
-            emit(HomeBrgUiState(isLoadingBrg = true))
+            emit(HomeUiState(isLoading = true))
             delay(900)
         }
         .catch {
             emit(
-                HomeBrgUiState(
-                    isLoadingBrg = false,
-                    isErrorBrg = true,
-                    errorMessageBrg = it.message ?: "Terjadi kesalahan"
+                HomeUiState(
+                    isLoading = false,
+                    isError = true,
+                    errorMessage = it.message ?: "Terjadi kesalahan"
                 )
             )
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeBrgUiState(
-                isLoadingBrg = true,
+            initialValue = HomeUiState(
+                isLoading = true,
             )
         )
 }
-data class HomeBrgUiState(
+
+data class HomeUiState(
     val listBrg: List<Barang> = listOf(),
-    val isLoadingBrg: Boolean =false,
-    val isErrorBrg : Boolean = false,
-    val errorMessageBrg : String = ""
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String = ""
 )
+
+
