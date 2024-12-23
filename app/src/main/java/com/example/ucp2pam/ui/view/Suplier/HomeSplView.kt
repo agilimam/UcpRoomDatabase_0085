@@ -100,7 +100,7 @@ fun BodyHomeSplView(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Tidak ada data Baarang.",
+                    text = "Tidak ada data Suplier.",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
