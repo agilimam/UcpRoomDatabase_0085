@@ -60,7 +60,7 @@ fun DetailBrgView(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEditClick(viewModel.detailUiState.value.detailUiEvent.id) },
+                    onEditClick(viewModel.detailUiState.value.detailUiEvent.id.toString())},
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -164,15 +164,14 @@ fun itemDetailBrg(
         Column (
             modifier = Modifier.padding(16.dp)
         ) {
-            ComponentDetailBrg(judul = "ID", isinya = barang.id)
-            Spacer(modifier = Modifier.padding(4.dp))
+
             ComponentDetailBrg(judul = "Nama", isinya = barang.Nama)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailBrg(judul = "Deskripsi", isinya = barang.Deskripsi)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailBrg(judul = "Harga", isinya = barang.Harga)
+            ComponentDetailBrg(judul = "Harga", isinya = barang.Harga.toString())
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailBrg(judul = "Stok", isinya = barang.Stok)
+            ComponentDetailBrg(judul = "Stok", isinya = barang.Stok.toString())
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailBrg(judul = "NamaSuplier", isinya = barang.NamaSuplier)
             Spacer(modifier = Modifier.padding(4.dp))
@@ -208,7 +207,9 @@ fun ComponentDetailBrg(
 }
 @Composable
 private fun DeleteConfirmationDialog(
-    onDeleteConfirm: () -> Unit, onDeleteCancel: () -> Unit,modifier: Modifier = Modifier
+    onDeleteConfirm: () -> Unit,
+    onDeleteCancel: () -> Unit,
+    modifier: Modifier = Modifier
 
 ) {
     AlertDialog(onDismissRequest = {/*  Do nothing */ },
