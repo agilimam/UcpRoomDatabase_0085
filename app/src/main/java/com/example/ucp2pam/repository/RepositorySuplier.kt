@@ -1,4 +1,4 @@
-package com.example.ucp2pam.data.repository
+package com.example.ucp2pam.repository
 
 import com.example.ucp2pam.data.entity.Suplier
 import kotlinx.coroutines.flow.Flow
