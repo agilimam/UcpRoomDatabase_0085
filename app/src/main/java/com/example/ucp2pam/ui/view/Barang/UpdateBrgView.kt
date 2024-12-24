@@ -51,7 +51,6 @@ fun UpdateBrgView(
     }
 
     Scaffold (
-        modifier = modifier,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, //tempatkan snackbar di scaffold
         topBar = {
             TopAppBar(
