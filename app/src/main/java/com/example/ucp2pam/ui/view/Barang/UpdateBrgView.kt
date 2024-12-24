@@ -29,35 +29,35 @@ fun UpdateBrgView(
     modifier: Modifier = Modifier,
     viewModel: UpdateBrgViewModel = viewModel(factory = PenyediaViewModel.Factory)// Inisialisai Viewmodel
 ){
-    val uiStateBrg = viewModel.updateUiStateBrg// ambil UI state dari viewModel
-    val snackbarHostStateBrg = remember { SnackbarHostState() }//Snaclbar State
+    val uiState = viewModel.updateUiState// ambil UI state dari viewModel
+    val snackbarHostState = remember { SnackbarHostState() }//Snaclbar State
     val coroutineScope = rememberCoroutineScope()
 
     // Observasi perubahan snackbarMassage
 
-    LaunchedEffect(uiStateBrg) {
+    LaunchedEffect(uiState) {
         println("LaunchedEffect triggered")
-        uiStateBrg.snackBarMessageBrg?.let { message ->
+        uiState.snackBarMessage?.let { message ->
             println("Snackbar message received: $message")
             coroutineScope.launch {
                 println("Launching coroutine for snackbar")
-                snackbarHostStateBrg.showSnackbar(
+                snackbarHostState.showSnackbar(
                     message = message,
                     duration = SnackbarDuration.Long
                 )
-                viewModel.resetSnackBarMessaggeBrg()
+                viewModel.resetSnackBarMessage()
             }
         }
     }
 
     Scaffold (
         modifier = modifier,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostStateBrg) }, //tempatkan snackbar di scaffold
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }, //tempatkan snackbar di scaffold
         topBar = {
             TopAppBar(
                 judul = "Edit Barang",
                 showBackButton = true,
-                onBack = onBack
+                onBack = onBack,
 
                 )
         }
@@ -68,16 +68,17 @@ fun UpdateBrgView(
                 .padding(padding)
                 .padding(16.dp)
         ){
+
             // isi Body
             InsertBodyBrg(
-                uiState = uiStateBrg,
-                onValueChange = {updatedEvent ->
-                    viewModel.updateStateBrg(updatedEvent)//update state di viewmodel
+                uiState = uiState,
+                onvalueChange = {updatedEvent ->
+                    viewModel.updateState(updatedEvent)//update state di viewmodel
                 },
                 onClick = {
                     coroutineScope.launch {
                         if (viewModel.validateFields()){
-                            viewModel.updateDataBrg()
+                            viewModel.updateData()
                             delay(600)
                             withContext(Dispatchers.Main){
                                 onNavigate()//Navigasi di main thread
