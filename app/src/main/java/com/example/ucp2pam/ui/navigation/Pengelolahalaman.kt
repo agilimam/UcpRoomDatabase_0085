@@ -17,6 +17,9 @@ import com.example.ucp2pam.ui.view.Barang.HomeBrgView
 import com.example.ucp2pam.ui.view.Barang.InsertBrgView
 import com.example.ucp2pam.ui.view.Barang.UpdateBrgView
 import com.example.ucp2pam.ui.view.PilihanHomeView
+import com.example.ucp2pam.ui.view.Suplier.DestinasiInsertSpl
+import com.example.ucp2pam.ui.view.Suplier.HomeSPlView
+import com.example.ucp2pam.ui.view.Suplier.InsertSplView
 
 @Composable
 fun PengelolaHalaman(
@@ -37,6 +40,12 @@ fun PengelolaHalaman(
                 },
                 onListBrgClick = {
                     navController.navigate(DestinasiHomeBrg.route)
+                },
+                onAddSplClick = {
+                    navController.navigate(DestinasiInsertSpl.route)
+                },
+                onListSplClick = {
+                    navController.navigate(DestinasiHomeSpl.route)
                 }
             )
         }
@@ -45,14 +54,29 @@ fun PengelolaHalaman(
             route = DestinasiHomeBrg.route
         ) {
             HomeBrgView(
-                onDetailClik = {id ->
+                onDetailClick = {id ->
                     navController.navigate("${DestinasiDetailBarang.route}/$id")
                     println(
-                        "Pengelolahalaman: id = $id"
+                        "PengelolaHalman: id = $id"
                     )
                 },
+                onBack = {
+                    navController.popBackStack()
+                },
                 modifier = modifier
+            )
 
+        }
+        //HomeSplView
+        composable(
+            route = DestinasiHomeSpl.route
+        ){
+            HomeSPlView(
+
+                onBack = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
             )
         }
         //InsertBrgView
@@ -69,16 +93,31 @@ fun PengelolaHalaman(
                 modifier = Modifier
             )
         }
+        //InsertSplView
+        composable(
+            route = DestinasiInsertSpl.route
+        ){
+            InsertSplView(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+
+            )
+        }
         //detailview
         composable(
             DestinasiDetailBarang.routesWithArg,
             arguments = listOf(
                 navArgument(DestinasiDetailBarang.ID){
-                    type = NavType.StringType
+                    type = NavType.IntType
                 }
             )
         ){
-            val id = it.arguments?.getString(DestinasiDetailBarang.ID)
+            val id = it.arguments?.getInt(DestinasiDetailBarang.ID)
             id?.let { id ->
                 DetailBrgView(
                     onBack = {
@@ -99,7 +138,7 @@ fun PengelolaHalaman(
             DestinasiUpdateBrg.routesWithArg,
             arguments = listOf(
                 navArgument(DestinasiUpdateBrg.ID){
-                    type = NavType.StringType
+                    type = NavType.IntType
                 }
             )
         ){
@@ -113,5 +152,6 @@ fun PengelolaHalaman(
                 modifier = modifier
             )
         }
+
     }
 }
