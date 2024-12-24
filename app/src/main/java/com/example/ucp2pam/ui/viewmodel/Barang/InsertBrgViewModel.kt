@@ -6,83 +6,81 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ucp2pam.data.entity.Barang
-import com.example.ucp2pam.data.repository.RepositoryBarang
+import com.example.ucp2pam.repository.RepositoryBarang
 import kotlinx.coroutines.launch
 
 class InsertBrgViewModel (private val repositoryBarang: RepositoryBarang) : ViewModel(){
-    var uiStateBrg by mutableStateOf(BrgUiState())
+    var uiState by mutableStateOf(BrgUIState())
 
     fun updateState(barangEvent: BarangEvent){
-        uiStateBrg = uiStateBrg.copy(
+        uiState = uiState.copy(
             barangEvent = barangEvent,
         )
 
     }private fun validataFields():Boolean{
-        val event = uiStateBrg.barangEvent
-        val errorStateBrg = FormErrorStateBrg(
-            id = if (event.id.isNotEmpty())null else " Id tidak boleh kosong",
+        val event = uiState.barangEvent
+        val errorState = FormErrorState(
             Nama = if (event.Nama.isNotEmpty())null else " Nama tidak boleh kosong",
             Deskripsi = if (event.Deskripsi.isNotEmpty())null else " Deskripsi tidak boleh kosong",
             Harga = if (event.Harga.isNotEmpty())null else " harga tidak boleh kosong",
             Stok = if (event.Stok.isNotEmpty())null else " Stok tidak boleh kosong",
             NamaSuplier = if (event.NamaSuplier.isNotEmpty())null else " Namasuplier tidak boleh kosong",
         )
-        uiStateBrg = uiStateBrg.copy(isEntryValidBrg = errorStateBrg)
-        return errorStateBrg.isValidBrg()
+        uiState = uiState.copy(isEntryValid = errorState)
+        return errorState.isValid()
     }
-    fun saveDataBrg (){
-        val currentEvent = uiStateBrg.barangEvent
+    fun saveData (){
+        val currentEvent = uiState.barangEvent
 
         if (validataFields()){
             viewModelScope.launch {
                 try {
                     repositoryBarang.insertBarang(currentEvent.toBarangEntity())
-                    uiStateBrg = uiStateBrg.copy(
-                        snackBarMessageBrg = "data berhasil disimpan",
+                    uiState = uiState.copy(
+                        snackBarMessage = "data berhasil disimpan",
                         barangEvent = BarangEvent(),
-                        isEntryValidBrg = FormErrorStateBrg(),
+                        isEntryValid = FormErrorState(),
                     )
                 }catch (e: Exception){
-                    uiStateBrg = uiStateBrg.copy(
-                        snackBarMessageBrg = "data gagal disimpan"
+                    uiState = uiState.copy(
+                        snackBarMessage = "data gagal disimpan"
                     )
                 }
             }
         }else {
-            uiStateBrg = uiStateBrg.copy(
-                snackBarMessageBrg = "input tidak valid periksa data kembali"
+            uiState = uiState.copy(
+                snackBarMessage = "input tidak valid periksa data kembali"
             )
         }
     }
-    fun resetSnackBarMessageBrg(){
-        uiStateBrg = uiStateBrg.copy(snackBarMessageBrg = null)
+    fun resetSnackBarMessage(){
+        uiState= uiState.copy(snackBarMessage = null)
     }
 
 }
 
-data class FormErrorStateBrg(
-    val id: String? = null,
+data class FormErrorState(
     val Nama: String? =null,
     val Deskripsi: String? =null,
     val Harga: String? =null,
     val Stok: String? =null,
     val NamaSuplier: String? =null,
 ){
-    fun isValidBrg(): Boolean{
-        return id == null && Nama == null && Deskripsi == null &&
+    fun isValid(): Boolean{
+        return  Nama == null && Deskripsi == null &&
                 Harga == null && Stok  == null && NamaSuplier == null
     }
 }
 fun BarangEvent.toBarangEntity():Barang = Barang(
-    id = id,
+    id = id ?: 0,
     Nama = Nama,
     Deskripsi = Deskripsi,
-    Harga = Harga,
-    Stok = Stok,
+    Harga = Harga.toDoubleOrNull() ?: 0.0,
+    Stok = Stok.toIntOrNull() ?: 0,
     NamaSuplier = NamaSuplier
 )
 data class BarangEvent(
-    val id: String = "",
+    val id: Int? = null,
     val Nama: String = "",
     val Deskripsi: String = "",
     val Harga: String = "",
@@ -90,8 +88,8 @@ data class BarangEvent(
     val NamaSuplier: String = "",
 )
 
-data class BrgUiState(
+data class BrgUIState(
     val barangEvent: BarangEvent = BarangEvent(),
-    val isEntryValidBrg: FormErrorStateBrg = FormErrorStateBrg(),
-    val snackBarMessageBrg:String?=null,
+    val isEntryValid: FormErrorState = FormErrorState(),
+    val snackBarMessage:String?=null,
 )
