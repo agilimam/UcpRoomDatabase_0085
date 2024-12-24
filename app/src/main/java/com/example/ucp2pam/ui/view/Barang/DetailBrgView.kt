@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -115,9 +116,15 @@ fun BodyDetailBrg(
                     onClick = {
                         deleteConfirmationRequired = true
                     } ,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = buttonColors(
+                        containerColor = Color(0XFF09f9d2)
+                    )
                 ) {
-                    Text(text = "Delete")
+                    Text(
+                        text = "Delete",
+                        color = Color.Black
+                    )
                 }
 
                 if (deleteConfirmationRequired){
@@ -157,15 +164,14 @@ fun itemDetailBrg(
         modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = Color(0XFF09f9d2)
         )
     ) {
         Column (
             modifier = Modifier.padding(16.dp)
         ) {
 
-            ComponentDetailBrg(judul = "Nama", isinya = barang.Nama)
+            ComponentDetailBrg(judul = "Nama Barang", isinya = barang.Nama)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailBrg(judul = "Deskripsi", isinya = barang.Deskripsi)
             Spacer(modifier = Modifier.padding(4.dp))
@@ -194,7 +200,7 @@ fun ComponentDetailBrg(
             text = "$judul : ",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray
+            color = Color.Black
 
         )
         Text(

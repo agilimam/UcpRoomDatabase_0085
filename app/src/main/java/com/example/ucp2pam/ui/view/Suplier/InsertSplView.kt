@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ucp2pam.ui.costumwidget.TopAppBar
 import com.example.ucp2pam.ui.navigation.AlamatNavigasi
-import com.example.ucp2pam.ui.viewmodel.Barang.FormErrorState
 import com.example.ucp2pam.ui.viewmodel.PenyediaViewModel
 import com.example.ucp2pam.ui.viewmodel.Suplier.FormErrorStateSpl
 import com.example.ucp2pam.ui.viewmodel.Suplier.InsertSplViewModel
@@ -121,7 +120,10 @@ fun InsertBodySpl(
                 containerColor = Color(0XFF09f9d2)
             )
         ) {
-            Text(text = "Simpan")
+            Text(
+                text = "Simpan",
+                color = Color.Black
+            )
         }
 
     }
